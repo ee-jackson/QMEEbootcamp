@@ -11,3 +11,4 @@ echo "Done!"
 exit
 
 
+#sudo apt update && sudo apt upgrade§
