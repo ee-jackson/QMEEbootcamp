@@ -1,0 +1,805 @@
+Starting weekly assessment for Eleanor, Week3
+
+Current Points = 100
+
+Note that: 
+(1) Major sections begin with a double "====" line 
+(2) Subsections begin with a single "====" line 
+(3) Code output or text file content are printed within single "*****" lines 
+
+======================================================================
+======================================================================
+Your Git repo size this week is about 18.23 KiB on disk 
+
+PART 1: Checking project workflow...
+
+Found the following directories in parent directory: Week1, Assessment, Week2, .git, Week3
+
+Found the following files in parent directory: README.txt, .gitignore, .DS_Store
+
+Checking for key files in parent directory...
+
+Found .gitignore in parent directory, great! 
+
+Printing contents of .gitignore:
+**********************************************************************
+*~ 
+*.tmp
+.DS_Store
+.DS_Store
+Week3/.DS_Store
+**********************************************************************
+
+Found README in parent directory, named: README.txt
+
+Printing contents of README.txt:
+**********************************************************************
+My QMEE Coursework Repository
+**********************************************************************
+
+======================================================================
+Looking for the weekly directories...
+
+Found 3 weekly directories: Week1, Week2, Week3
+
+The Week3 directory will be assessed 
+
+======================================================================
+======================================================================
+PART 2: Checking weekly code and workflow...
+
+======================================================================
+Assessing WEEK3...
+
+Found the following directories: code, data, results
+
+Found the following files: .DS_Store
+
+Checking for readme file in weekly directory...
+
+README file missing, 1 pt deducted
+
+Current Points = 99
+
+Found following files in results directory: TreeHts.csv, MyData.csv...
+ideally, Results directory should be empty other than, perhaps, a readme. 
+
+Found 12 code files: apply1.R, sample.R, control_flow.R, boilerplate.R, TreeHeight.R, next.R, Vectorize1.R, break.R, basic_io.R, Vectorize2.R, preallocate.R, DataWrang.R
+
+Found the following extra files: .Rhistory, Rplots.pdf
+0.5 pt deducted per extra file
+
+Current Points = 98.0
+
+======================================================================
+Testing script/code files...
+
+======================================================================
+Inspecting script file apply1.R...
+
+File contents are:
+**********************************************************************
+#!/usr/bin/env Rscript
+
+## Build a random matrix
+M <- matrix(rnorm(100), 10, 10)
+
+## Take the mean of each row
+RowMeans <- apply(M, 1, mean)
+print (RowMeans)
+
+## Now the variance
+RowVars <- apply(M, 1, var)
+print (RowVars)
+
+## By column
+ColMeans <- apply(M, 2, mean)
+print (ColMeans)
+
+SomeOperation <- function(v){ # (What does this function do?)
+  if (sum(v) > 0){
+    return (v * 100)
+  }
+  return (v)
+}
+
+M <- matrix(rnorm(100), 10, 10)
+print (apply(M, 1, SomeOperation))**********************************************************************
+
+Testing apply1.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+ [1]  0.16330483 -0.08097815 -0.33230980  0.48818518  0.18027091 -0.38061507
+ [7] -0.05206305  0.13451375  0.28913945  0.10682046
+ [1] 2.0109774 1.2310429 0.7078622 1.3705115 0.4472323 0.8261071 0.6927732
+ [8] 1.5947598 1.8729916 1.3579964
+ [1] -0.02983548 -0.46062569  0.09660933 -0.13174942 -0.30669319  0.14158623
+ [7]  0.45018698  0.17657136 -0.22442933  0.80464771
+             [,1]       [,2]      [,3]       [,4]       [,5]        [,6]
+ [1,] -0.66762293   78.96122 -66.78117  0.3969572 -27.9563
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.11652s
+
+======================================================================
+Inspecting script file sample.R...
+
+File contents are:
+**********************************************************************
+#!/usr/bin/env Rscript
+######### Functions ##########
+
+## A function to take a sample of size n from a population "popn" and return its mean
+myexperiment <- function(popn,n){
+    pop_sample <- sample(popn, n, replace = FALSE)
+    return(mean(pop_sample))
+}
+
+## Calculate means using a for loop without preallocation:
+loopy_sample1 <- function(popn, n, num){
+	result1 <- vector() #Initialize empty vector of size 1 
+	for(i in 1:num){
+		result1 <- c(result1, myexperiment(popn, n))
+    }
+	return(result1)
+}
+
+## To run "num" iterations of the experiment using a for loop on a vector with preallocation:
+loopy_sample2 <- function(popn, n, num){
+	result2 <- vector(,num) #Preallocate expected size
+	for(i in 1:num){
+		result2[i] <- myexperiment(popn, n)
+    }
+	return(result2)
+}
+
+## To run "num" iterations of the experiment using a for loop on a list with preallocation:
+loopy_sample3 <- function(popn, n, num){
+	result3 <- vector("list", num) #Preallocate expected size
+	for(i in 1:num){
+		result3[[i]] <- myexperiment(popn, n)
+    }
+	return(result3)
+}
+
+
+## To run "num" iterations of the experiment using vectorization with lapply:
+lapply_sample <- function(popn, n, num){ #lapply for lists sapply for vectors
+	result4 <- lapply(1:num, function(i) myexperiment(popn, n))
+	return(result4)
+}
+
+## To run "num" iterations of the experiment using vectorization with lapply:
+sapply_sample <- function(popn, n, num){
+	result5 <- sapply(1:num, function(i) myexperiment(popn, n))
+	return(result5)
+}
+
+# Now generate a population:
+
+popn <- rnorm(1000) # Generate the population
+
+n <- 20 # sample size for each experiment
+num <- 1000 # Number of times to rerun the experiment
+
+print("The loopy, non-preallocation approach takes:" )
+print(system.time(loopy_sample1(popn, n, num)))
+
+print("The loopy, but with preallocation approach takes:" )
+print(system.time(loopy_sample2(popn, n, num)))
+
+print("The loopy, non-preallocation approach takes:" )
+print(system.time(loopy_sample3(popn, n, num)))
+
+print("The vectorized sapply approach takes:" )
+print(system.time(sapply_sample(popn, n, num)))
+
+print("The vectorized lapply approach takes:" )
+print(system.time(lapply_sample(popn, n, num)))
+
+hist(popn)
+
+# [1] "The loopy, non-preallocation approach takes:"
+#    user  system elapsed 
+#   0.030   0.004   0.034 
+# [1] "The loopy, but with preallocation approach takes:"
+#    user  system elapsed 
+#   0.011   0.001   0.012 
+# [1] "The loopy, non-preallocation approach takes:"
+#    user  system elapsed 
+#   0.011   0.001   0.011 
+# [1] "The vectorized sapply approach takes:"
+#    user  system elapsed 
+#   0.008   0.000   0.009 
+# [1] "The vectorized lapply approach takes:"
+#    user  system elapsed 
+#   0.008   0.000   0.008 
+
+**********************************************************************
+
+Testing sample.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+[1] "The loopy, non-preallocation approach takes:"
+   user  system elapsed 
+  0.056   0.000   0.054 
+[1] "The loopy, but with preallocation approach takes:"
+   user  system elapsed 
+  0.016   0.000   0.016 
+[1] "The loopy, non-preallocation approach takes:"
+   user  system elapsed 
+  0.012   0.000   0.015 
+[1] "The vectorized sapply approach takes:"
+   user  system elapsed 
+  0.016   0.000   0.017 
+[1] "The vectorized lapply approach takes:"
+   user  system elapsed 
+  0.012   0.000   0.012 
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.31297s
+
+======================================================================
+Inspecting script file control_flow.R...
+
+File contents are:
+**********************************************************************
+#!/usr/bin/env Rscript
+
+## If statement
+a <- TRUE
+if (a == TRUE){
+	print ("a is TRUE")
+	} else {
+	print ("a is FALSE")
+}
+
+## If statement on a single line
+z <- runif(1) ## uniformly distributed random number
+if (z <= 0.5) {print ("Less than a half")}
+
+## For loop using a sequence
+for (i in 1:10){
+	j <- i * i
+	print(paste(i, " squared is", j ))
+}
+
+## For loop over vector of strings
+for(species in c('Heliodoxa rubinoides', 
+                 'Boissonneaua jardini', 
+                 'Sula nebouxii')){
+  print(paste('The species is', species))
+}
+
+## for loop using a vector
+v1 <- c("a","bc","def")
+for (i in v1){
+	print(i)
+}
+
+## While loop
+i <- 0
+while (i<10){
+	i <- i+1
+	print(i^2)
+}
+**********************************************************************
+
+Testing control_flow.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+[1] "a is TRUE"
+[1] "Less than a half"
+[1] "1  squared is 1"
+[1] "2  squared is 4"
+[1] "3  squared is 9"
+[1] "4  squared is 16"
+[1] "5  squared is 25"
+[1] "6  squared is 36"
+[1] "7  squared is 49"
+[1] "8  squared is 64"
+[1] "9  squared is 81"
+[1] "10  squared is 100"
+[1] "The species is Heliodoxa rubinoides"
+[1] "The species is Boissonneaua jardini"
+[1] "The species is Sula nebouxii"
+[1] "a"
+[1] "bc"
+[1] "def"
+[1] 1
+[1] 4
+[1] 9
+[1] 16
+[1] 25
+[1] 36
+[1] 49
+[1] 64
+[1] 81
+[1] 100
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.14206s
+
+======================================================================
+Inspecting script file boilerplate.R...
+
+File contents are:
+**********************************************************************
+#!/usr/bin/env Rscript
+# A boilerplate R script
+
+MyFunction <- function(Arg1, Arg2){
+
+  # Statements involving Arg1, Arg2:
+  print(paste("Argument", as.character(Arg1), "is a", class(Arg1))) # print Arg1's type
+  print(paste("Argument", as.character(Arg2), "is a", class(Arg2))) # print Arg2's type
+
+  return (c(Arg1, Arg2)) #this is optional, but very useful
+}
+
+MyFunction(1,2) #test the function
+MyFunction("Riki","Tiki") #A different test**********************************************************************
+
+Testing boilerplate.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+[1] "Argument 1 is a numeric"
+[1] "Argument 2 is a numeric"
+[1] 1 2
+[1] "Argument Riki is a character"
+[1] "Argument Tiki is a character"
+[1] "Riki" "Tiki"
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.13891s
+
+======================================================================
+Inspecting script file TreeHeight.R...
+
+File contents are:
+**********************************************************************
+#!/usr/bin/env Rscript
+
+# This function calculates heights of trees given distance of each tree 
+# from its base and angle to its top, using  the trigonometric formula 
+#
+# height = distance * tan(radians)
+#
+# ARGUMENTS
+# degrees:   The angle of elevation of tree
+# distance:  The distance from base of tree (e.g., meters)
+#
+# OUTPUT
+# The heights of the tree, same units as "distance"
+
+TreeHeight <- function(degrees, distance){
+  radians <- degrees * pi / 180
+  height <- distance * tan(radians)
+  return (height)
+}
+
+tree.data<-read.csv("../data/trees.csv", header = TRUE)
+
+
+tree.data$Tree.Height.m<-TreeHeight(tree.data$Angle.degrees, tree.data$Distance.m)
+
+
+write.csv(tree.data,"../results/TreeHts.csv")**********************************************************************
+
+Testing TreeHeight.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.14011s
+
+======================================================================
+Inspecting script file next.R...
+
+File contents are:
+**********************************************************************
+#!/usr/bin/env Rscript
+for (i in 1:10) {
+  if ((i %% 2) == 0) 
+    next # pass to next iteration of loop 
+  print(i)
+}**********************************************************************
+
+Testing next.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+[1] 1
+[1] 3
+[1] 5
+[1] 7
+[1] 9
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.11831s
+
+======================================================================
+Inspecting script file Vectorize1.R...
+
+File contents are:
+**********************************************************************
+M <- matrix(runif(1000000),1000,1000)
+
+SumAllElements <- function(M){
+  Dimensions <- dim(M)
+  Tot <- 0
+  for (i in 1:Dimensions[1]){
+    for (j in 1:Dimensions[2]){
+      Tot <- Tot + M[i,j]
+    }
+  }
+  return (Tot)
+}
+ 
+print("Using loops, the time taken is:")
+print(system.time(SumAllElements(M)))
+
+print("Using the in-built vectorized function, the time taken is:")
+print(system.time(sum(M)))**********************************************************************
+
+Testing Vectorize1.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+[1] "Using loops, the time taken is:"
+   user  system elapsed 
+  0.104   0.000   0.102 
+[1] "Using the in-built vectorized function, the time taken is:"
+   user  system elapsed 
+  0.000   0.000   0.001 
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.28059s
+
+======================================================================
+Inspecting script file break.R...
+
+File contents are:
+**********************************************************************
+#!/usr/bin/env Rscript
+i <- 0 #Initialize i
+	while(i < Inf) {
+		if (i == 10) {
+			break 
+             } # Break out of the while loop! 
+		else { 
+			cat("i equals " , i , " \n")
+			i <- i + 1 # Update i
+	}
+}**********************************************************************
+
+Testing break.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+i equals  0  
+i equals  1  
+i equals  2  
+i equals  3  
+i equals  4  
+i equals  5  
+i equals  6  
+i equals  7  
+i equals  8  
+i equals  9  
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.16448s
+
+======================================================================
+Inspecting script file basic_io.R...
+
+File contents are:
+**********************************************************************
+#!/usr/bin/env Rscript
+
+# A simple script to illustrate R input-output.  
+# Run line by line and check inputs outputs to understand what is happening  
+
+MyData <- read.csv("../data/trees.csv", header = TRUE) # import with headers
+
+write.csv(MyData, "../results/MyData.csv") #write it out as a new file
+
+write.table(MyData[1,], file = "../results/MyData.csv",append=TRUE) # Append to it
+
+write.csv(MyData, "../results/MyData.csv", row.names=TRUE) # write row names
+
+write.table(MyData, "../results/MyData.csv", col.names=FALSE) # ignore column names**********************************************************************
+
+Testing basic_io.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+
+**********************************************************************
+
+Encountered error (or warning):
+Warning message:
+In write.table(MyData[1, ], file = "../results/MyData.csv", append = TRUE) :
+  appending column names to file
+
+======================================================================
+Inspecting script file Vectorize2.R...
+
+File contents are:
+**********************************************************************
+# Runs the stochastic (with gaussian fluctuations) Ricker Eqn .
+
+rm(list=ls())
+
+# A vectorization challenge: The Ricker model is a classic discrete population model which was introduced in 1954 by Ricker to model recruitment of stock in fisheries. It gives the expected number (or density) 
+#  of individuals in generation 
+#  as a function of the number of individuals in the previous generation
+
+Ricker <- function(N0=1, r=1, K=10, generations=50)
+{
+  # Runs a simulation of the Ricker model
+  # Returns a vector of length generations
+
+  N <- rep(NA, generations)    # Creates a vector of NA
+
+  N[1] <- N0
+  for (t in 2:generations)
+  {
+    N[t] <- N[t-1] * exp(r*(1.0-(N[t-1]/K)))
+  }
+  return (N)
+}
+
+plot(Ricker(generations=10), type="l")
+
+# Now open and run the script Vectorize2.R (available on the TheMulQuaBio repository). This is the stochastic Ricker model (compare with the above script to see where the stochasticity (random error) enters). Now modify the script to complete the exercise given. Your goal is to come up with a solution better than mine!
+
+stochrick<-function(p0=runif(1000,.5,1.5),r=1.2,K=1,sigma=0.2,numyears=100)
+{
+  #initialize
+  N<-matrix(NA,numyears,length(p0))
+  N[1,]<-p0
+  
+  for (pop in 1:length(p0)){ #loop through the populations
+
+    for (yr in 2:numyears) { #for each pop, loop through the years
+
+      N[yr,pop]<-N[yr-1,pop]*exp(r*(1-N[yr-1,pop]/K)+rnorm(1,0,sigma))
+    }
+  }
+  return(N)
+}
+
+# Now write another function called stochrickvect that vectorizes the above 
+# to the extent possible, with improved performance: 
+
+stochrickvect<-function(p0=runif(1000,.5,1.5),r=1.2,K=1,sigma=0.2,numyears=100)
+{
+  #initialize
+  N<-matrix(NA,numyears,length(p0))
+  N[1,]<-p0
+
+  for (yr in 2:numyears) { # For each population, loop through years
+
+    N[yr,] <- N[yr-1,pop]*exp(r*(1-N[yr-1,pop]/K)+rnorm(1,0,sigma))
+  }
+  return(N)
+}
+
+
+# print("Vectorized Stochastic Ricker takes:")
+# print(system.time(res2<-stochrickvect()))
+
+**********************************************************************
+
+Testing Vectorize2.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.26543s
+
+======================================================================
+Inspecting script file preallocate.R...
+
+File contents are:
+**********************************************************************
+# Pre-allocation
+# And if you are using loops, one operation that is slow in R (and somewhat slow in all languages) is memory allocation for a particular variable that will change during loping (e.g., a variable that is a dataframe). So writing a for loop that resizes a vector repeatedly makes R re-allocate memory repeatedly, which makes it slow. Try this:
+
+a <- NA
+for (i in 1:10) {
+    a <- c(a, i)
+    print(a)
+    print(object.size(a))
+}
+
+# Here, in each repetition of the for loop, R has to re-size the vector and re-allocate memory. It has to find the vector in memory, create a new vector that will fit more data, copy the old data over, insert the new data, and erase the old vector. This can get very slow as vectors get big.
+
+# On the other hand, if you "pre-allocate" a vector that fits all the values, R doesn't have to re-allocate memory each iteration, and the results can be much faster. Here's how you'd do that for the above case:
+
+a <- rep(NA, 10)
+
+for (i in 1:10) {
+    a[i] <- i
+    print(a)
+    print(object.size(a))
+}
+
+# Try timing each of these as you did above using system.time(). To really see the difference, increase the iterations from 10 to, say, 10000.
+
+# Fortunately, R has several functions that can operate on entire vectors and matrices without requiring looping (Vectorization). That is, vectorizing a computer program means you write it such that as many operations as possible are applied to whole data structure (vectors, matrices, dataframes, lists, etc) at one go, instead of its individual elements.
+
+# You will learn about some important R functions that allow vectorization in the following sections.**********************************************************************
+
+Testing preallocate.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+[1] NA  1
+48 bytes
+[1] NA  1  2
+56 bytes
+[1] NA  1  2  3
+56 bytes
+[1] NA  1  2  3  4
+72 bytes
+[1] NA  1  2  3  4  5
+72 bytes
+[1] NA  1  2  3  4  5  6
+72 bytes
+[1] NA  1  2  3  4  5  6  7
+72 bytes
+[1] NA  1  2  3  4  5  6  7  8
+88 bytes
+ [1] NA  1  2  3  4  5  6  7  8  9
+88 bytes
+ [1] NA  1  2  3  4  5  6  7  8  9 10
+88 bytes
+ [1]  1 NA NA NA NA NA NA NA NA NA
+88 bytes
+ [1]  1  2 NA NA NA NA NA NA NA NA
+88 bytes
+ [1]  1  2  3 NA NA NA NA NA NA NA
+88 bytes
+ [1]  1  2  3  4 NA NA NA NA NA NA
+88 byte
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.14617s
+
+======================================================================
+Inspecting script file DataWrang.R...
+
+File contents are:
+**********************************************************************
+################################################################
+################## Wrangling the Pound Hill Dataset ############
+################################################################
+
+############# Load the dataset ###############
+# header = false because the raw data don't have real headers
+MyData <- as.matrix(read.csv("../data/PoundHillData.csv",header = F)) 
+
+# header = true because we do have metadata headers
+MyMetaData <- read.csv("../data/PoundHillMetaData.csv",header = T, sep=";", stringsAsFactors = F)
+
+############# Inspect the dataset ###############
+head(MyData)
+dim(MyData)
+str(MyData)
+fix(MyData) #you can also do this
+fix(MyMetaData)
+
+############# Transpose ###############
+# To get those species into columns and treatments into rows 
+MyData <- t(MyData) 
+head(MyData)
+dim(MyData)
+
+############# Replace species absences with zeros ###############
+MyData[MyData == ""] = 0
+
+############# Convert raw matrix to data frame ###############
+
+TempData <- as.data.frame(MyData[-1,],stringsAsFactors = F) #stringsAsFactors = F is important!
+colnames(TempData) <- MyData[1,] # assign column names from original data
+
+############# Convert from wide to long format  ###############
+require(reshape2) # load the reshape2 package
+
+?melt #check out the melt function
+
+MyWrangledData <- melt(TempData, id=c("Cultivation", "Block", "Plot", "Quadrat"), variable.name = "Species", value.name = "Count")
+
+MyWrangledData[, "Cultivation"] <- as.factor(MyWrangledData[, "Cultivation"])
+MyWrangledData[, "Block"] <- as.factor(MyWrangledData[, "Block"])
+MyWrangledData[, "Plot"] <- as.factor(MyWrangledData[, "Plot"])
+MyWrangledData[, "Quadrat"] <- as.factor(MyWrangledData[, "Quadrat"])
+MyWrangledData[, "Count"] <- as.integer(MyWrangledData[, "Count"])
+
+str(MyWrangledData)
+head(MyWrangledData)
+dim(MyWrangledData)
+
+############# Exploring the data (extend the script below)  ###############
+**********************************************************************
+
+Testing DataWrang.R...
+
+Output (only first 500 characters): 
+
+**********************************************************************
+     V1                     V2        V3        V4        V5        V6       
+[1,] "Cultivation"          "october" "october" "october" "october" "october"
+[2,] "Block"                "a"       "a"       "a"       "a"       "a"      
+[3,] "Plot"                 "1"       "1"       "1"       "1"       "1"      
+[4,] "Quadrat"              "Q1"      "Q2"      "Q3"      "Q4"      "Q5"     
+[5,] "Achillea millefolium" "4"       "8"       "3"       "20"      "6"      
+[6,] "Agrostis gigantea"    ""   
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 10.00787s
+
+======================================================================
+======================================================================
+Finished running scripts
+
+Ran into 1 errors
+
+======================================================================
+======================================================================
+
+FINISHED WEEKLY ASSESSMENT
+
+Current Points for the Week = 98.0
+
+NOTE THAT THESE ARE POINTS, NOT MARKS FOR THE WEEK!
